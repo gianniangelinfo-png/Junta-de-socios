@@ -16,18 +16,16 @@ mongoose.connect(MONGODB_URI, {
 }).then(() => console.log('MongoDB Conectado Exitosamente'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// Esquema de Socios con Aportes Históricos por Año y Detalle Mensual
+// Esquema dinámico de Socios con Aportes por Año y Mensuales
 const SocioSchema = new mongoose.Schema({
   nombre: String,
   dni: String,
   telefono: String,
-  // Objeto con totales por año: { "2023": 100, "2024": 1200, "2025": 1200, "2026": 500 }
   aportesAnuales: {
     type: Map,
     of: Number,
     default: {}
   },
-  // Matriz de aportes mensuales del año en curso
   aportesMensuales: {
     type: Map,
     of: [Number],
@@ -40,7 +38,6 @@ const PrestamoSchema = new mongoose.Schema({
   monto: Number,
   tasa: Number,
   mesInicio: Number,
-  anio: { type: Number, default: 2026 },
   interesesCobrados: Number,
   estado: { type: String, default: 'Activo' }
 });
@@ -48,7 +45,7 @@ const PrestamoSchema = new mongoose.Schema({
 const Socio = mongoose.model('Socio', SocioSchema);
 const Prestamo = mongoose.model('Prestamo', PrestamoSchema);
 
-// RUTAS API
+// RUTAS API DE SOCIOS
 
 // Obtener socios
 app.get('/api/socios', async (req, res) => {
@@ -60,7 +57,7 @@ app.get('/api/socios', async (req, res) => {
   }
 });
 
-// Crear socio con aportes históricos iniciales
+// Guardar nuevo socio con aportes iniciales por año
 app.post('/api/socios', async (req, res) => {
   try {
     const nuevoSocio = new Socio(req.body);
@@ -71,7 +68,7 @@ app.post('/api/socios', async (req, res) => {
   }
 });
 
-// Actualizar aportes anuales de un socio
+// Actualizar aportes anuales directamente en la tabla
 app.put('/api/socios/:id/aportes-anuales', async (req, res) => {
   try {
     const { id } = req.params;
@@ -83,7 +80,7 @@ app.put('/api/socios/:id/aportes-anuales', async (req, res) => {
   }
 });
 
-// Actualizar aportes mensuales
+// Actualizar aportes mensuales del año en curso
 app.put('/api/socios/:id/aportes-mensuales', async (req, res) => {
   try {
     const { id } = req.params;
@@ -93,7 +90,7 @@ app.put('/api/socios/:id/aportes-mensuales', async (req, res) => {
     
     socio.aportesMensuales.set(anio.toString(), aportes);
     
-    // Actualizar el total anual del año
+    // Actualizar también la suma en la columna del año correspondiente
     const totalAnio = aportes.reduce((a, b) => a + b, 0);
     if (!socio.aportesAnuales) socio.aportesAnuales = new Map();
     socio.aportesAnuales.set(anio.toString(), totalAnio);
@@ -115,7 +112,7 @@ app.delete('/api/socios/:id', async (req, res) => {
   }
 });
 
-// Obtener préstamos
+// RUTAS API DE PRÉSTAMOS
 app.get('/api/prestamos', async (req, res) => {
   try {
     const prestamos = await Prestamo.find();
@@ -125,7 +122,6 @@ app.get('/api/prestamos', async (req, res) => {
   }
 });
 
-// Guardar préstamo
 app.post('/api/prestamos', async (req, res) => {
   try {
     const nuevoPrestamo = new Prestamo(req.body);
@@ -136,10 +132,10 @@ app.post('/api/prestamos', async (req, res) => {
   }
 });
 
-// Servir la web visual
+// Ruta visual de la app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor iniciado en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
