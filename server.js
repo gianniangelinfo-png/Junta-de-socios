@@ -11,7 +11,9 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // Conexión a MongoDB Atlas mediante variable de entorno
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/junta_db';
+ 
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://usuario:password@cluster0.xyz.mongodb.net/junta_db?retryWrites=true&w=majority';
+
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
