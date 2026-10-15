@@ -16,7 +16,7 @@ mongoose.connect(MONGODB_URI, {
 }).then(() => console.log('MongoDB Conectado Exitosamente'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// Esquema dinámico de Socios con Aportes por Año y Mensuales
+// Esquema dinámico de Socios
 const SocioSchema = new mongoose.Schema({
   nombre: String,
   dni: String,
@@ -46,8 +46,6 @@ const Socio = mongoose.model('Socio', SocioSchema);
 const Prestamo = mongoose.model('Prestamo', PrestamoSchema);
 
 // RUTAS API DE SOCIOS
-
-// Obtener socios
 app.get('/api/socios', async (req, res) => {
   try {
     const socios = await Socio.find();
@@ -57,7 +55,6 @@ app.get('/api/socios', async (req, res) => {
   }
 });
 
-// Guardar nuevo socio con aportes iniciales por año
 app.post('/api/socios', async (req, res) => {
   try {
     const nuevoSocio = new Socio(req.body);
@@ -68,7 +65,6 @@ app.post('/api/socios', async (req, res) => {
   }
 });
 
-// Actualizar aportes anuales directamente en la tabla
 app.put('/api/socios/:id/aportes-anuales', async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,7 +76,6 @@ app.put('/api/socios/:id/aportes-anuales', async (req, res) => {
   }
 });
 
-// Actualizar aportes mensuales del año en curso
 app.put('/api/socios/:id/aportes-mensuales', async (req, res) => {
   try {
     const { id } = req.params;
@@ -90,7 +85,6 @@ app.put('/api/socios/:id/aportes-mensuales', async (req, res) => {
     
     socio.aportesMensuales.set(anio.toString(), aportes);
     
-    // Actualizar también la suma en la columna del año correspondiente
     const totalAnio = aportes.reduce((a, b) => a + b, 0);
     if (!socio.aportesAnuales) socio.aportesAnuales = new Map();
     socio.aportesAnuales.set(anio.toString(), totalAnio);
@@ -102,7 +96,6 @@ app.put('/api/socios/:id/aportes-mensuales', async (req, res) => {
   }
 });
 
-// Eliminar socio
 app.delete('/api/socios/:id', async (req, res) => {
   try {
     await Socio.findByIdAndDelete(req.params.id);
@@ -129,6 +122,16 @@ app.post('/api/prestamos', async (req, res) => {
     res.json(nuevoPrestamo);
   } catch (error) {
     res.status(500).json({ error: 'Error al guardar préstamo' });
+  }
+});
+
+// NUEVA RUTA: Eliminar préstamo por ID
+app.delete('/api/prestamos/:id', async (req, res) => {
+  try {
+    await Prestamo.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: 'Préstamo eliminado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar préstamo' });
   }
 });
 
