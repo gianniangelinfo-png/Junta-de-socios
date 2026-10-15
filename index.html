@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Control - Junta de Socios</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @media print {
@@ -17,7 +15,6 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
-  <!-- Encabezado Principal -->
   <header class="bg-indigo-900 text-white shadow-md no-print">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -35,7 +32,6 @@
     </div>
   </header>
 
-  <!-- Contenido Principal -->
   <main class="max-w-7xl mx-auto px-4 py-6">
 
     <!-- Tarjetas KPI -->
@@ -50,7 +46,7 @@
 
       <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-emerald-600 flex justify-between items-center">
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase">Intereses Ganados (2026)</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Intereses Ganados</p>
           <p id="kpi-intereses" class="text-2xl font-bold text-emerald-600">S/ 0.00</p>
         </div>
         <div class="p-3 bg-emerald-50 text-emerald-600 rounded-full"><i class="fa-solid fa-chart-line text-xl"></i></div>
@@ -73,11 +69,11 @@
       </div>
     </div>
 
-    <!-- Pestañas de Navegación -->
+    <!-- Navegación -->
     <div class="bg-white rounded-xl shadow-sm mb-6 no-print">
       <div class="flex border-b overflow-x-auto">
         <button onclick="cambiarTab('historico')" id="tab-btn-historico" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-indigo-600 text-indigo-600">
-          <i class="fa-solid fa-table-list mr-2"></i> Histórico de Aportes por Año (Excel Base)
+          <i class="fa-solid fa-table-list mr-2"></i> Matriz Aportes por Año (2023 - 2026)
         </button>
         <button onclick="cambiarTab('socios')" id="tab-btn-socios" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-transparent text-slate-500 hover:text-slate-700">
           <i class="fa-solid fa-user-plus mr-2"></i> Registrar Socio
@@ -89,23 +85,18 @@
           <i class="fa-solid fa-file-invoice-dollar mr-2"></i> Préstamos e Intereses
         </button>
         <button onclick="cambiarTab('reparticion')" id="tab-btn-reparticion" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-transparent text-slate-500 hover:text-slate-700">
-          <i class="fa-solid fa-scale-balanced mr-2"></i> Repartición de Ganancias
+          <i class="fa-solid fa-scale-balanced mr-2"></i> Repartición
         </button>
       </div>
     </div>
 
-    <!-- SECCIÓN 0: HISTÓRICO DE APORTES POR AÑO (EXCEL BASE) -->
+    <!-- SECCIÓN: MATRIZ DE APORTES POR AÑO -->
     <div id="sec-historico" class="tab-content">
       <div class="bg-white p-6 rounded-xl shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-3 border-b">
           <div>
             <h2 class="text-xl font-bold text-slate-800">Control de Aportes Acumulados por Año (2023 - 2026)</h2>
-            <p class="text-xs text-slate-500">Ingresa o edita los montos totales aportados por cada socio año por año.</p>
-          </div>
-          <div class="mt-2 md:mt-0 flex gap-2">
-            <button onclick="cargarBaseExcelDemo()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition">
-              <i class="fa-solid fa-file-excel mr-1.5"></i> Cargar Socios de mi Excel
-            </button>
+            <p class="text-xs text-slate-500">Puedes modificar directamente las casillas de los años para actualizar el saldo base de cada socio.</p>
           </div>
         </div>
 
@@ -123,6 +114,7 @@
                 <th class="p-3 bg-emerald-800">Puntos x Socio</th>
                 <th class="p-3">Factor Ganancia</th>
                 <th class="p-3 bg-emerald-700 text-amber-300">Ganancia del Socio (S/)</th>
+                <th class="p-3 text-center">Acción</th>
               </tr>
             </thead>
             <tbody id="tabla-historica" class="divide-y text-center">
@@ -136,43 +128,47 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 1: SOCIOS -->
+    <!-- SECCIÓN: REGISTRAR NUEVO SOCIO CON APORTES POR AÑO -->
     <div id="sec-socios" class="tab-content hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm h-fit">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <i class="fa-solid fa-user-plus mr-2 text-indigo-600"></i> Registrar Nuevo Socio
+            <i class="fa-solid fa-user-plus mr-2 text-indigo-600"></i> Ingresar Nuevo Socio
           </h2>
-          <form id="form-socio" onsubmit="guardarSocio(event)" class="space-y-4">
+          <form id="form-socio" onsubmit="guardarSocio(event)" class="space-y-3">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre Completo *</label>
               <input type="text" id="socio-nombre" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ej: Eduar Quispe Núñez">
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2023 (S/)</label>
-              <input type="number" step="0.01" id="socio-2023" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte 2023 (S/)</label>
+                <input type="number" step="0.01" id="socio-2023" value="0" class="w-full border rounded-lg px-3 py-1.5 text-sm outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte 2024 (S/)</label>
+                <input type="number" step="0.01" id="socio-2024" value="0" class="w-full border rounded-lg px-3 py-1.5 text-sm outline-none">
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2024 (S/)</label>
-              <input type="number" step="0.01" id="socio-2024" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte 2025 (S/)</label>
+                <input type="number" step="0.01" id="socio-2025" value="0" class="w-full border rounded-lg px-3 py-1.5 text-sm outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte 2026 (S/)</label>
+                <input type="number" step="0.01" id="socio-2026" value="0" class="w-full border rounded-lg px-3 py-1.5 text-sm outline-none">
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2025 (S/)</label>
-              <input type="number" step="0.01" id="socio-2025" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2026 (S/)</label>
-              <input type="number" step="0.01" id="socio-2026" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-            </div>
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg text-sm transition">
-              Guardar Socio
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg text-sm transition mt-2">
+              Guardar Socio e Historia
             </button>
           </form>
         </div>
 
         <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <i class="fa-solid fa-list mr-2 text-indigo-600"></i> Lista General de Socios
+            <i class="fa-solid fa-list mr-2 text-indigo-600"></i> Lista General de Socios Registrados
           </h2>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
@@ -185,7 +181,7 @@
                 </tr>
               </thead>
               <tbody id="tabla-socios" class="divide-y">
-                <!-- Carga JS -->
+                <!-- JS -->
               </tbody>
             </table>
           </div>
@@ -193,12 +189,12 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 2: APORTES MENSUALES (2026) -->
+    <!-- SECCIÓN: APORTES MENSUALES (2026) -->
     <div id="sec-aportes" class="tab-content hidden">
       <div class="bg-white p-6 rounded-xl shadow-sm">
         <div class="mb-4">
-          <h2 class="text-lg font-bold text-slate-800">Matriz de Aportes Mensuales del Año 2026 (S/)</h2>
-          <p class="text-xs text-slate-500">Los valores ingresados aquí actualizarán automáticamente la columna 2026.</p>
+          <h2 class="text-lg font-bold text-slate-800">Matriz de Aportes Mensuales (2026)</h2>
+          <p class="text-xs text-slate-500">Los aportes registrados mes a mes aquí actualizarán de forma automática el total del año 2026.</p>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left border-collapse">
@@ -220,25 +216,24 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 3: PRÉSTAMOS -->
+    <!-- SECCIÓN: PRÉSTAMOS -->
     <div id="sec-prestamos" class="tab-content hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm h-fit">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <i class="fa-solid fa-hand-holding-dollar mr-2 text-indigo-600"></i> Registrar Nuevo Préstamo
+            <i class="fa-solid fa-hand-holding-dollar mr-2 text-indigo-600"></i> Registrar Préstamo
           </h2>
           <form id="form-prestamo" onsubmit="guardarPrestamo(event)" class="space-y-4">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Socio Prestatario *</label>
               <select id="prestamo-socio" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                <!-- Opciones JS -->
               </select>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Monto Préstamo (S/) *</label>
-                <input type="number" step="0.01" id="prestamo-monto" required oninput="calcularSugerenciaInteres()" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="1000.00">
+                <input type="number" step="0.01" id="prestamo-monto" required oninput="calcularSugerenciaInteres()" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Tasa Mensual (%) *</label>
@@ -270,7 +265,7 @@
 
         <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <i class="fa-solid fa-receipt mr-2 text-indigo-600"></i> Préstamos Registrados
+            <i class="fa-solid fa-receipt mr-2 text-indigo-600"></i> Préstamos e Intereses Cobrados
           </h2>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
@@ -292,7 +287,7 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 4: REPARTICIÓN -->
+    <!-- SECCIÓN: REPARTICIÓN -->
     <div id="sec-reparticion" class="tab-content hidden">
       <div class="bg-white p-6 rounded-xl shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b">
@@ -301,7 +296,7 @@
             <p class="text-xs text-slate-500">Cálculo proporcional basado en Puntos Acumulados por Socio.</p>
           </div>
           <button onclick="window.print()" class="mt-3 md:mt-0 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm no-print transition">
-            <i class="fa-solid fa-print mr-2"></i> Imprimir
+            <i class="fa-solid fa-print mr-2"></i> Imprimir Reporte
           </button>
         </div>
 
@@ -330,19 +325,9 @@
 
   </main>
 
-  <!-- Lógica JavaScript -->
   <script>
     let socios = [];
     let prestamos = [];
-
-    // Meses de permanencia por año según la fórmula de tu Excel
-    // 2023: 1 mes, 2024: 12 meses, 2025: 12 meses, 2026: 5 meses
-    const MESES_ANUALES = {
-      "2023": 1,
-      "2024": 12,
-      "2025": 12,
-      "2026": 5
-    };
 
     document.addEventListener("DOMContentLoaded", () => {
       cargarDatosDesdeAPI();
@@ -388,7 +373,7 @@
       const a2025 = parseFloat(a['2025']) || 0;
       const a2026 = parseFloat(a['2026']) || 0;
 
-      // Puntos = Aporte * Meses Acumulados
+      // Puntos = (Aporte2023 * 1) + (Aporte2024 * 12) + (Aporte2025 * 12) + (Aporte2026 * 5)
       return (a2023 * 1) + (a2024 * 12) + (a2025 * 12) + (a2026 * 5);
     }
 
@@ -433,7 +418,7 @@
     }
 
     async function eliminarSocio(id) {
-      if (confirm("¿Está seguro de eliminar este socio?")) {
+      if (confirm("¿Está seguro de eliminar este socio y sus registros?")) {
         await fetch(`/api/socios/${id}`, { method: 'DELETE' });
         await cargarDatosDesdeAPI();
       }
@@ -454,15 +439,15 @@
       tbody.innerHTML = '';
 
       if (socios.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="py-4 text-slate-400">Sin socios registrados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="py-6 text-slate-400">Sin socios registrados. Utiliza la pestaña "Registrar Socio" para comenzar a ingresar tu lista.</td></tr>`;
+        tfoot.innerHTML = '';
         return;
       }
 
-      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0) || 6916.50;
+      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0);
 
       let sum2023 = 0, sum2024 = 0, sum2025 = 0, sum2026 = 0, sumTotalCap = 0, sumPuntos = 0, sumGanancias = 0;
 
-      // Calcular puntos totales del grupo
       const puntosTotalesGrupo = socios.reduce((sum, s) => sum + calcularPuntosSocio(s), 0);
       const factorGananciaGlobal = puntosTotalesGrupo > 0 ? (bolsaIntereses / puntosTotalesGrupo) : 0;
 
@@ -492,6 +477,9 @@
             <td class="p-2.5 font-bold text-emerald-800 bg-emerald-50">${puntosSocio.toLocaleString()}</td>
             <td class="p-2.5 font-medium text-slate-600">${factorGananciaGlobal.toFixed(4)}</td>
             <td class="p-2.5 font-bold text-emerald-700 bg-amber-50">S/ ${gananciaSocio.toFixed(2)}</td>
+            <td class="p-2.5 text-center">
+              <button onclick="eliminarSocio('${s._id}')" class="text-rose-600 hover:text-rose-800"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
           </tr>
         `;
       });
@@ -507,6 +495,7 @@
           <td class="p-3 text-emerald-900">${sumPuntos.toLocaleString()}</td>
           <td class="p-3">-</td>
           <td class="p-3 text-amber-900 bg-amber-300 font-bold text-sm">S/ ${sumGanancias.toFixed(2)}</td>
+          <td class="p-3"></td>
         </tr>
       `;
     }
@@ -634,7 +623,7 @@
       const tfoot = document.getElementById('tfoot-reparticion');
       tbody.innerHTML = ''; tfoot.innerHTML = '';
 
-      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0) || 6916.50;
+      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0);
       const puntosTotales = socios.reduce((sum, s) => sum + calcularPuntosSocio(s), 0);
 
       let totalCap = 0, totalGan = 0;
@@ -680,47 +669,13 @@
         capTotal += (parseFloat(a['2023'])||0) + (parseFloat(a['2024'])||0) + (parseFloat(a['2025'])||0) + (parseFloat(a['2026'])||0);
       });
 
-      const intGanados = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0) || 6916.50;
+      const intGanados = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0);
       const prestamosActivos = prestamos.filter(p => p.estado === 'Activo').reduce((sum, p) => sum + p.monto, 0);
 
       document.getElementById('kpi-capital').textContent = `S/ ${capTotal.toFixed(2)}`;
       document.getElementById('kpi-intereses').textContent = `S/ ${intGanados.toFixed(2)}`;
       document.getElementById('kpi-prestamos').textContent = `S/ ${prestamosActivos.toFixed(2)}`;
       document.getElementById('kpi-disponible').textContent = `S/ ${(capTotal + intGanados - prestamosActivos).toFixed(2)}`;
-    }
-
-    // Cargar automáticamente los 16 socios exactos de la imagen de Excel
-    async function cargarBaseExcelDemo() {
-      if (!confirm("¿Desea cargar los 16 socios de su hoja de Excel?")) return;
-
-      const demo = [
-        { nombre: "Eduar Quispe Núñez", aportesAnuales: { "2023": 100, "2024": 1200, "2025": 1200, "2026": 500 } },
-        { nombre: "Dianela Pulache Viera", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Dario Agurto García", aportesAnuales: { "2023": 30, "2024": 360, "2025": 600, "2026": 250 } },
-        { nombre: "Marilu Pasapera Alzamora", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Joyce Pupuche Yarleque", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Reynaldo Ruiz Aguilar", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Lucy Viera Pacherrez", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Mariela Curay Palacios", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Arturo Flores", aportesAnuales: { "2023": 80, "2024": 960, "2025": 960, "2026": 400 } },
-        { nombre: "Ydelsa Neyra", aportesAnuales: { "2023": 30, "2024": 360, "2025": 600, "2026": 250 } },
-        { nombre: "Manuel Macalupu", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Marleny Pupuche Aquino", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
-        { nombre: "Florentino Cardenas", aportesAnuales: { "2023": 0, "2024": 0, "2025": 150, "2026": 480 } },
-        { nombre: "Josias Crisanto", aportesAnuales: { "2023": 0, "2024": 0, "2025": 0, "2026": 1000 } },
-        { nombre: "Elva Flores", aportesAnuales: { "2023": 0, "2024": 0, "2025": 0, "2026": 950 } },
-        { nombre: "Enrique Pulache Nole", aportesAnuales: { "2023": 0, "2024": 0, "2025": 0, "2026": 500 } }
-      ];
-
-      for (const item of demo) {
-        await fetch('/api/socios', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(item)
-        });
-      }
-
-      await cargarDatosDesdeAPI();
     }
   </script>
 </body>
