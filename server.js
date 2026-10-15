@@ -16,7 +16,7 @@ mongoose.connect(MONGODB_URI, {
 }).then(() => console.log('MongoDB Conectado Exitosamente'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// Esquema dinámico de Socios
+// Esquema de Socios
 const SocioSchema = new mongoose.Schema({
   nombre: String,
   dni: String,
@@ -33,11 +33,12 @@ const SocioSchema = new mongoose.Schema({
   }
 });
 
+// Esquema de Préstamos Actualizado (Sin tasa, con Año y Saldo)
 const PrestamoSchema = new mongoose.Schema({
   socioId: String,
-  monto: Number,
-  tasa: Number,
-  mesInicio: Number,
+  saldo: Number,
+  mesOtorgamiento: Number,
+  anioOtorgamiento: Number,
   interesesCobrados: Number,
   estado: { type: String, default: 'Activo' }
 });
@@ -125,7 +126,6 @@ app.post('/api/prestamos', async (req, res) => {
   }
 });
 
-// NUEVA RUTA: Eliminar préstamo por ID
 app.delete('/api/prestamos/:id', async (req, res) => {
   try {
     await Prestamo.findByIdAndDelete(req.params.id);
@@ -135,10 +135,10 @@ app.delete('/api/prestamos/:id', async (req, res) => {
   }
 });
 
-// Ruta visual de la app
+// Ruta de arranque visual
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor iniciado en puerto ${PORT}`));
