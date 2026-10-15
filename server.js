@@ -33,13 +33,12 @@ const SocioSchema = new mongoose.Schema({
   }
 });
 
-// Esquema de Préstamos Actualizado (Sin tasa, con Año y Saldo)
+// Esquema de Préstamos (Sin campo de interés registrado)
 const PrestamoSchema = new mongoose.Schema({
   socioId: String,
   saldo: Number,
   mesOtorgamiento: Number,
   anioOtorgamiento: Number,
-  interesesCobrados: Number,
   estado: { type: String, default: 'Activo' }
 });
 
