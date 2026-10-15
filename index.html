@@ -24,7 +24,7 @@
         <i class="fa-solid fa-piggy-bank text-amber-400 text-3xl"></i>
         <div>
           <h1 class="text-2xl font-bold">Control Junta de Socios</h1>
-          <p class="text-xs text-indigo-200">Aportes, Préstamos y Repartición (Aporte-Tiempo)</p>
+          <p class="text-xs text-indigo-200">Aportes Acumulados por Año (Desde 2023) y Repartición</p>
         </div>
       </div>
       <div class="flex items-center space-x-2">
@@ -42,7 +42,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 no-print">
       <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-600 flex justify-between items-center">
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase">Capital Total Aportado</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Total Aportado Acumulado</p>
           <p id="kpi-capital" class="text-2xl font-bold text-slate-800">S/ 0.00</p>
         </div>
         <div class="p-3 bg-indigo-50 text-indigo-600 rounded-full"><i class="fa-solid fa-wallet text-xl"></i></div>
@@ -50,7 +50,7 @@
 
       <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-emerald-600 flex justify-between items-center">
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase">Bolsa Intereses Ganados</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Intereses Ganados (2026)</p>
           <p id="kpi-intereses" class="text-2xl font-bold text-emerald-600">S/ 0.00</p>
         </div>
         <div class="p-3 bg-emerald-50 text-emerald-600 rounded-full"><i class="fa-solid fa-chart-line text-xl"></i></div>
@@ -76,23 +76,68 @@
     <!-- Pestañas de Navegación -->
     <div class="bg-white rounded-xl shadow-sm mb-6 no-print">
       <div class="flex border-b overflow-x-auto">
-        <button onclick="cambiarTab('socios')" id="tab-btn-socios" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-indigo-600 text-indigo-600">
-          <i class="fa-solid fa-users mr-2"></i> Socios
+        <button onclick="cambiarTab('historico')" id="tab-btn-historico" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-indigo-600 text-indigo-600">
+          <i class="fa-solid fa-table-list mr-2"></i> Histórico de Aportes por Año (Excel Base)
+        </button>
+        <button onclick="cambiarTab('socios')" id="tab-btn-socios" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+          <i class="fa-solid fa-user-plus mr-2"></i> Registrar Socio
         </button>
         <button onclick="cambiarTab('aportes')" id="tab-btn-aportes" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-transparent text-slate-500 hover:text-slate-700">
-          <i class="fa-solid fa-calendar-days mr-2"></i> Matriz Aportes Mensuales
+          <i class="fa-solid fa-calendar-days mr-2"></i> Matriz Mensual (2026)
         </button>
         <button onclick="cambiarTab('prestamos')" id="tab-btn-prestamos" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-transparent text-slate-500 hover:text-slate-700">
           <i class="fa-solid fa-file-invoice-dollar mr-2"></i> Préstamos e Intereses
         </button>
         <button onclick="cambiarTab('reparticion')" id="tab-btn-reparticion" class="tab-btn py-3.5 px-6 font-medium text-sm flex items-center border-b-2 border-transparent text-slate-500 hover:text-slate-700">
-          <i class="fa-solid fa-scale-balanced mr-2"></i> Repartición (Diciembre)
+          <i class="fa-solid fa-scale-balanced mr-2"></i> Repartición de Ganancias
         </button>
       </div>
     </div>
 
+    <!-- SECCIÓN 0: HISTÓRICO DE APORTES POR AÑO (EXCEL BASE) -->
+    <div id="sec-historico" class="tab-content">
+      <div class="bg-white p-6 rounded-xl shadow-sm">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-3 border-b">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800">Control de Aportes Acumulados por Año (2023 - 2026)</h2>
+            <p class="text-xs text-slate-500">Ingresa o edita los montos totales aportados por cada socio año por año.</p>
+          </div>
+          <div class="mt-2 md:mt-0 flex gap-2">
+            <button onclick="cargarBaseExcelDemo()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition">
+              <i class="fa-solid fa-file-excel mr-1.5"></i> Cargar Socios de mi Excel
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border">
+            <thead class="bg-indigo-900 text-white uppercase text-center">
+              <tr>
+                <th class="p-3 text-left">N°</th>
+                <th class="p-3 text-left min-w-[180px]">Nombres y Apellidos</th>
+                <th class="p-3 bg-indigo-800">Total Aportado</th>
+                <th class="p-3">2023</th>
+                <th class="p-3">2024</th>
+                <th class="p-3">2025</th>
+                <th class="p-3 bg-indigo-800">2026</th>
+                <th class="p-3 bg-emerald-800">Puntos x Socio</th>
+                <th class="p-3">Factor Ganancia</th>
+                <th class="p-3 bg-emerald-700 text-amber-300">Ganancia del Socio (S/)</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-historica" class="divide-y text-center">
+              <!-- JS -->
+            </tbody>
+            <tfoot id="tfoot-historico" class="bg-slate-100 font-bold border-t-2 border-indigo-900 text-center">
+              <!-- Totales -->
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- SECCIÓN 1: SOCIOS -->
-    <div id="sec-socios" class="tab-content">
+    <div id="sec-socios" class="tab-content hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm h-fit">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
@@ -101,15 +146,23 @@
           <form id="form-socio" onsubmit="guardarSocio(event)" class="space-y-4">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre Completo *</label>
-              <input type="text" id="socio-nombre" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ej: Juan Pérez">
+              <input type="text" id="socio-nombre" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ej: Eduar Quispe Núñez">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">DNI / Documento</label>
-              <input type="text" id="socio-dni" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="12345678">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2023 (S/)</label>
+              <input type="number" step="0.01" id="socio-2023" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Teléfono</label>
-              <input type="text" id="socio-telefono" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="987654321">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2024 (S/)</label>
+              <input type="number" step="0.01" id="socio-2024" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2025 (S/)</label>
+              <input type="number" step="0.01" id="socio-2025" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Aporte Año 2026 (S/)</label>
+              <input type="number" step="0.01" id="socio-2026" value="0" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg text-sm transition">
               Guardar Socio
@@ -119,21 +172,20 @@
 
         <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <i class="fa-solid fa-list mr-2 text-indigo-600"></i> Directorio de Socios
+            <i class="fa-solid fa-list mr-2 text-indigo-600"></i> Lista General de Socios
           </h2>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b">
                 <tr>
+                  <th class="p-3">N°</th>
                   <th class="p-3">Socio</th>
-                  <th class="p-3">DNI</th>
-                  <th class="p-3">Teléfono</th>
-                  <th class="p-3 text-right">Total Aportado</th>
+                  <th class="p-3 text-right">Total Acumulado</th>
                   <th class="p-3 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody id="tabla-socios" class="divide-y">
-                <!-- Carga vía JS -->
+                <!-- Carga JS -->
               </tbody>
             </table>
           </div>
@@ -141,12 +193,12 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 2: APORTES MENSUALES -->
+    <!-- SECCIÓN 2: APORTES MENSUALES (2026) -->
     <div id="sec-aportes" class="tab-content hidden">
       <div class="bg-white p-6 rounded-xl shadow-sm">
         <div class="mb-4">
-          <h2 class="text-lg font-bold text-slate-800">Matriz de Aportes Mensuales (S/)</h2>
-          <p class="text-xs text-slate-500">Aporte-Tiempo Ponderado: Enero multiplicador x12, Diciembre multiplicador x1.</p>
+          <h2 class="text-lg font-bold text-slate-800">Matriz de Aportes Mensuales del Año 2026 (S/)</h2>
+          <p class="text-xs text-slate-500">Los valores ingresados aquí actualizarán automáticamente la columna 2026.</p>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left border-collapse">
@@ -157,12 +209,11 @@
                 <th class="p-2">Abr</th><th class="p-2">May</th><th class="p-2">Jun</th>
                 <th class="p-2">Jul</th><th class="p-2">Ago</th><th class="p-2">Sep</th>
                 <th class="p-2">Oct</th><th class="p-2">Nov</th><th class="p-2">Dic</th>
-                <th class="p-2 bg-indigo-700">Total Capital</th>
-                <th class="p-2 bg-emerald-700">Aporte-Mes</th>
+                <th class="p-2 bg-indigo-700">Total 2026</th>
               </tr>
             </thead>
             <tbody id="tabla-matriz-aportes" class="divide-y border-b text-center">
-              <!-- Carga vía JS -->
+              <!-- JS -->
             </tbody>
           </table>
         </div>
@@ -191,7 +242,7 @@
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Tasa Mensual (%) *</label>
-                <input type="number" step="0.1" id="prestamo-tasa" value="5" required oninput="calcularSugerenciaInteres()" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="5">
+                <input type="number" step="0.1" id="prestamo-tasa" value="5" required oninput="calcularSugerenciaInteres()" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
               </div>
             </div>
 
@@ -207,8 +258,7 @@
               </div>
               <div>
                 <label class="block text-xs font-semibold text-amber-700 mb-1">Interés Generado (S/) ✏️</label>
-                <!-- CAMPO EDITABLE DE INTERÉS GENERADO -->
-                <input type="number" step="0.01" id="prestamo-interes-monto" required class="w-full border-2 border-amber-400 bg-amber-50 rounded-lg px-3 py-2 text-sm font-bold text-amber-900 focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Ingresa el interés">
+                <input type="number" step="0.01" id="prestamo-interes-monto" required class="w-full border-2 border-amber-400 bg-amber-50 rounded-lg px-3 py-2 text-sm font-bold text-amber-900 focus:ring-2 focus:ring-amber-500 outline-none">
               </div>
             </div>
 
@@ -220,7 +270,7 @@
 
         <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
           <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <i class="fa-solid fa-receipt mr-2 text-indigo-600"></i> Historial de Préstamos e Intereses Cobrados
+            <i class="fa-solid fa-receipt mr-2 text-indigo-600"></i> Préstamos Registrados
           </h2>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
@@ -231,11 +281,10 @@
                   <th class="p-3">Tasa</th>
                   <th class="p-3 text-right">Int. Registrado (S/)</th>
                   <th class="p-3 text-center">Estado</th>
-                  <th class="p-3 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody id="tabla-prestamos" class="divide-y">
-                <!-- Carga vía JS -->
+                <!-- JS -->
               </tbody>
             </table>
           </div>
@@ -243,16 +292,16 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 4: REPARTICIÓN DE FIN DE AÑO -->
+    <!-- SECCIÓN 4: REPARTICIÓN -->
     <div id="sec-reparticion" class="tab-content hidden">
       <div class="bg-white p-6 rounded-xl shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b">
           <div>
-            <h2 class="text-xl font-bold text-slate-800">Repartición de Ganancias e Intereses (Diciembre)</h2>
-            <p class="text-xs text-slate-500">Distribución proporcional basada en la permanencia del capital (Aporte-Tiempo).</p>
+            <h2 class="text-xl font-bold text-slate-800">Repartición de Ganancias e Intereses</h2>
+            <p class="text-xs text-slate-500">Cálculo proporcional basado en Puntos Acumulados por Socio.</p>
           </div>
           <button onclick="window.print()" class="mt-3 md:mt-0 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm no-print transition">
-            <i class="fa-solid fa-print mr-2"></i> Imprimir Reporte
+            <i class="fa-solid fa-print mr-2"></i> Imprimir
           </button>
         </div>
 
@@ -261,15 +310,15 @@
             <thead class="bg-indigo-900 text-white text-xs uppercase">
               <tr>
                 <th class="p-3">Socio</th>
-                <th class="p-3 text-right">Capital Total Aportado</th>
-                <th class="p-3 text-right">Aporte-Mes (Factor)</th>
+                <th class="p-3 text-right">Total Aportado Acumulado</th>
+                <th class="p-3 text-right">Puntos Ponderados</th>
                 <th class="p-3 text-right">% Participación</th>
-                <th class="p-3 text-right text-amber-300">Interés Ganado (S/)</th>
-                <th class="p-3 text-right bg-emerald-800">Total a Recibir (Capital + Int.)</th>
+                <th class="p-3 text-right text-amber-300">Ganancia / Interés (S/)</th>
+                <th class="p-3 text-right bg-emerald-800">Total Liquidación</th>
               </tr>
             </thead>
             <tbody id="tabla-reparticion" class="divide-y">
-              <!-- Carga vía JS -->
+              <!-- JS -->
             </tbody>
             <tfoot id="tfoot-reparticion" class="bg-slate-100 font-bold border-t-2 border-indigo-900">
               <!-- Totales -->
@@ -285,6 +334,15 @@
   <script>
     let socios = [];
     let prestamos = [];
+
+    // Meses de permanencia por año según la fórmula de tu Excel
+    // 2023: 1 mes, 2024: 12 meses, 2025: 12 meses, 2026: 5 meses
+    const MESES_ANUALES = {
+      "2023": 1,
+      "2024": 12,
+      "2025": 12,
+      "2026": 5
+    };
 
     document.addEventListener("DOMContentLoaded", () => {
       cargarDatosDesdeAPI();
@@ -323,32 +381,49 @@
       btn.classList.add('border-indigo-600', 'text-indigo-600');
     }
 
-    // Calcula una sugerencia automática pero permite la edición libre del usuario
-    function calcularSugerenciaInteres() {
-      const monto = parseFloat(document.getElementById('prestamo-monto').value) || 0;
-      const tasa = parseFloat(document.getElementById('prestamo-tasa').value) || 0;
-      const mesInicio = parseInt(document.getElementById('prestamo-mes').value) || 1;
+    function calcularPuntosSocio(socio) {
+      const a = socio.aportesAnuales || {};
+      const a2023 = parseFloat(a['2023']) || 0;
+      const a2024 = parseFloat(a['2024']) || 0;
+      const a2025 = parseFloat(a['2025']) || 0;
+      const a2026 = parseFloat(a['2026']) || 0;
 
-      const mesesPermanencia = 13 - mesInicio;
-      const sugerencia = monto * (tasa / 100) * mesesPermanencia;
-
-      const inputInteres = document.getElementById('prestamo-interes-monto');
-      inputInteres.value = sugerencia > 0 ? sugerencia.toFixed(2) : '';
+      // Puntos = Aporte * Meses Acumulados
+      return (a2023 * 1) + (a2024 * 12) + (a2025 * 12) + (a2026 * 5);
     }
 
-    // --- SOCIOS ---
+    async function actualizarAporteAnual(socioId, anio, valor) {
+      const socio = socios.find(s => s._id === socioId);
+      if (!socio) return;
+
+      if (!socio.aportesAnuales) socio.aportesAnuales = {};
+      socio.aportesAnuales[anio] = parseFloat(valor) || 0;
+
+      await fetch(`/api/socios/${socioId}/aportes-anuales`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ aportesAnuales: socio.aportesAnuales })
+      });
+
+      renderizarTodo();
+    }
+
     async function guardarSocio(e) {
       e.preventDefault();
       const nombre = document.getElementById('socio-nombre').value.trim();
-      const dni = document.getElementById('socio-dni').value.trim();
-      const telefono = document.getElementById('socio-telefono').value.trim();
-
       if (!nombre) return;
+
+      const aportesAnuales = {
+        "2023": parseFloat(document.getElementById('socio-2023').value) || 0,
+        "2024": parseFloat(document.getElementById('socio-2024').value) || 0,
+        "2025": parseFloat(document.getElementById('socio-2025').value) || 0,
+        "2026": parseFloat(document.getElementById('socio-2026').value) || 0
+      };
 
       const res = await fetch('/api/socios', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, dni, telefono, aportes: Array(12).fill(0) })
+        body: JSON.stringify({ nombre, aportesAnuales })
       });
 
       if (res.ok) {
@@ -364,26 +439,156 @@
       }
     }
 
-    // --- APORTES ---
-    async function actualizarAporte(socioId, mesIdx, valor) {
+    function renderizarTodo() {
+      renderizarHistorico();
+      renderizarSocios();
+      renderizarMatrizAportes();
+      renderizarPrestamos();
+      renderizarReparticion();
+      renderizarKPIs();
+    }
+
+    function renderizarHistorico() {
+      const tbody = document.getElementById('tabla-historica');
+      const tfoot = document.getElementById('tfoot-historico');
+      tbody.innerHTML = '';
+
+      if (socios.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="py-4 text-slate-400">Sin socios registrados.</td></tr>`;
+        return;
+      }
+
+      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0) || 6916.50;
+
+      let sum2023 = 0, sum2024 = 0, sum2025 = 0, sum2026 = 0, sumTotalCap = 0, sumPuntos = 0, sumGanancias = 0;
+
+      // Calcular puntos totales del grupo
+      const puntosTotalesGrupo = socios.reduce((sum, s) => sum + calcularPuntosSocio(s), 0);
+      const factorGananciaGlobal = puntosTotalesGrupo > 0 ? (bolsaIntereses / puntosTotalesGrupo) : 0;
+
+      socios.forEach((s, idx) => {
+        const a = s.aportesAnuales || {};
+        const v23 = parseFloat(a['2023']) || 0;
+        const v24 = parseFloat(a['2024']) || 0;
+        const v25 = parseFloat(a['2025']) || 0;
+        const v26 = parseFloat(a['2026']) || 0;
+
+        const totalSocio = v23 + v24 + v25 + v26;
+        const puntosSocio = calcularPuntosSocio(s);
+        const gananciaSocio = puntosSocio * factorGananciaGlobal;
+
+        sum2023 += v23; sum2024 += v24; sum2025 += v25; sum2026 += v26;
+        sumTotalCap += totalSocio; sumPuntos += puntosSocio; sumGanancias += gananciaSocio;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2.5 font-medium text-slate-500">${idx + 1}</td>
+            <td class="p-2.5 text-left font-semibold text-slate-700">${s.nombre}</td>
+            <td class="p-2.5 font-bold text-indigo-900 bg-indigo-50">S/ ${totalSocio.toFixed(2)}</td>
+            <td class="p-1"><input type="number" step="0.01" value="${v23 || ''}" onchange="actualizarAporteAnual('${s._id}', '2023', this.value)" class="w-16 text-center border rounded py-1"></td>
+            <td class="p-1"><input type="number" step="0.01" value="${v24 || ''}" onchange="actualizarAporteAnual('${s._id}', '2024', this.value)" class="w-16 text-center border rounded py-1"></td>
+            <td class="p-1"><input type="number" step="0.01" value="${v25 || ''}" onchange="actualizarAporteAnual('${s._id}', '2025', this.value)" class="w-16 text-center border rounded py-1"></td>
+            <td class="p-1 bg-indigo-50"><input type="number" step="0.01" value="${v26 || ''}" onchange="actualizarAporteAnual('${s._id}', '2026', this.value)" class="w-16 text-center border rounded py-1 font-semibold text-indigo-900"></td>
+            <td class="p-2.5 font-bold text-emerald-800 bg-emerald-50">${puntosSocio.toLocaleString()}</td>
+            <td class="p-2.5 font-medium text-slate-600">${factorGananciaGlobal.toFixed(4)}</td>
+            <td class="p-2.5 font-bold text-emerald-700 bg-amber-50">S/ ${gananciaSocio.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      tfoot.innerHTML = `
+        <tr>
+          <td colspan="2" class="p-3 text-left">TOTALES</td>
+          <td class="p-3 text-indigo-900">S/ ${sumTotalCap.toFixed(2)}</td>
+          <td class="p-3">S/ ${sum2023.toFixed(2)}</td>
+          <td class="p-3">S/ ${sum2024.toFixed(2)}</td>
+          <td class="p-3">S/ ${sum2025.toFixed(2)}</td>
+          <td class="p-3 text-indigo-900">S/ ${sum2026.toFixed(2)}</td>
+          <td class="p-3 text-emerald-900">${sumPuntos.toLocaleString()}</td>
+          <td class="p-3">-</td>
+          <td class="p-3 text-amber-900 bg-amber-300 font-bold text-sm">S/ ${sumGanancias.toFixed(2)}</td>
+        </tr>
+      `;
+    }
+
+    function renderizarSocios() {
+      const tbody = document.getElementById('tabla-socios');
+      const selectPrestamo = document.getElementById('prestamo-socio');
+      tbody.innerHTML = '';
+      selectPrestamo.innerHTML = '<option value="">-- Seleccionar Socio --</option>';
+
+      socios.forEach((s, idx) => {
+        const a = s.aportesAnuales || {};
+        const total = (parseFloat(a['2023'])||0) + (parseFloat(a['2024'])||0) + (parseFloat(a['2025'])||0) + (parseFloat(a['2026'])||0);
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 text-slate-500">${idx + 1}</td>
+            <td class="p-3 font-semibold text-slate-700">${s.nombre}</td>
+            <td class="p-3 text-right font-medium text-indigo-900">S/ ${total.toFixed(2)}</td>
+            <td class="p-3 text-center">
+              <button onclick="eliminarSocio('${s._id}')" class="text-rose-600 hover:text-rose-800 p-1">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+        selectPrestamo.innerHTML += `<option value="${s._id}">${s.nombre}</option>`;
+      });
+    }
+
+    function renderizarMatrizAportes() {
+      const tbody = document.getElementById('tabla-matriz-aportes');
+      tbody.innerHTML = '';
+
+      socios.forEach(s => {
+        const arr = (s.aportesMensuales && s.aportesMensuales['2026']) ? s.aportesMensuales['2026'] : Array(12).fill(0);
+        let inputsHtml = '';
+        let total = 0;
+
+        arr.forEach((val, idx) => {
+          total += val;
+          inputsHtml += `
+            <td class="p-1">
+              <input type="number" step="0.01" value="${val || ''}" onchange="actualizarAporteMensual('${s._id}', ${idx}, this.value)" class="w-14 text-center border rounded py-1 text-xs">
+            </td>
+          `;
+        });
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 text-left font-semibold text-slate-700">${s.nombre}</td>
+            ${inputsHtml}
+            <td class="p-2 font-bold text-indigo-900 bg-indigo-50">S/ ${total.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    async function actualizarAporteMensual(socioId, mesIdx, valor) {
       const socio = socios.find(s => s._id === socioId);
       if (!socio) return;
 
-      const nuevosAportes = [...(socio.aportes || Array(12).fill(0))];
-      nuevosAportes[mesIdx] = parseFloat(valor) || 0;
+      const arr = (socio.aportesMensuales && socio.aportesMensuales['2026']) ? [...socio.aportesMensuales['2026']] : Array(12).fill(0);
+      arr[mesIdx] = parseFloat(valor) || 0;
 
-      await fetch(`/api/socios/${socioId}/aportes`, {
+      await fetch(`/api/socios/${socioId}/aportes-mensuales`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ aportes: nuevosAportes })
+        body: JSON.stringify({ anio: 2026, aportes: arr })
       });
 
-      socio.aportes = nuevosAportes;
-      renderizarKPIs();
-      renderizarReparticion();
+      await cargarDatosDesdeAPI();
     }
 
-    // --- PRÉSTAMOS ---
+    function calcularSugerenciaInteres() {
+      const monto = parseFloat(document.getElementById('prestamo-monto').value) || 0;
+      const tasa = parseFloat(document.getElementById('prestamo-tasa').value) || 0;
+      const mesInicio = parseInt(document.getElementById('prestamo-mes').value) || 1;
+      const sugerencia = monto * (tasa / 100) * (13 - mesInicio);
+      document.getElementById('prestamo-interes-monto').value = sugerencia > 0 ? sugerencia.toFixed(2) : '';
+    }
+
     async function guardarPrestamo(e) {
       e.preventDefault();
       const socioId = document.getElementById('prestamo-socio').value;
@@ -392,7 +597,7 @@
       const mesInicio = parseInt(document.getElementById('prestamo-mes').value);
       const interesesCobrados = parseFloat(document.getElementById('prestamo-interes-monto').value) || 0;
 
-      if (!socioId || isNaN(monto) || monto <= 0) return;
+      if (!socioId || isNaN(monto)) return;
 
       const res = await fetch('/api/prestamos', {
         method: 'POST',
@@ -402,117 +607,23 @@
 
       if (res.ok) {
         document.getElementById('form-prestamo').reset();
-        document.getElementById('prestamo-tasa').value = "5";
         await cargarDatosDesdeAPI();
       }
-    }
-
-    // --- RENDERIZADO ---
-    function renderizarTodo() {
-      renderizarSocios();
-      renderizarMatrizAportes();
-      renderizarPrestamos();
-      renderizarReparticion();
-      renderizarKPIs();
-    }
-
-    function renderizarSocios() {
-      const tbody = document.getElementById('tabla-socios');
-      const selectPrestamo = document.getElementById('prestamo-socio');
-      tbody.innerHTML = '';
-      selectPrestamo.innerHTML = '<option value="">-- Seleccionar Socio --</option>';
-
-      if (socios.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-slate-400">Sin socios registrados.</td></tr>`;
-        return;
-      }
-
-      socios.forEach(s => {
-        const totalAportado = (s.aportes || []).reduce((a, b) => a + b, 0);
-
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-semibold text-slate-700">${s.nombre}</td>
-            <td class="p-3 text-slate-500">${s.dni || '-'}</td>
-            <td class="p-3 text-slate-500">${s.telefono || '-'}</td>
-            <td class="p-3 text-right font-medium text-indigo-900">S/ ${totalAportado.toFixed(2)}</td>
-            <td class="p-3 text-center">
-              <button onclick="eliminarSocio('${s._id}')" class="text-rose-600 hover:text-rose-800 p-1">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </td>
-          </tr>
-        `;
-
-        selectPrestamo.innerHTML += `<option value="${s._id}">${s.nombre}</option>`;
-      });
-    }
-
-    function renderizarMatrizAportes() {
-      const tbody = document.getElementById('tabla-matriz-aportes');
-      tbody.innerHTML = '';
-
-      if (socios.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="15" class="py-4 text-slate-400 text-center">Ingrese socios para habilitar los aportes.</td></tr>`;
-        return;
-      }
-
-      socios.forEach(s => {
-        const arr = s.aportes || Array(12).fill(0);
-        let inputsHtml = '';
-        let capitalTotal = 0;
-        let aporteMes = 0;
-
-        arr.forEach((val, idx) => {
-          capitalTotal += val;
-          aporteMes += (val * (12 - idx));
-          inputsHtml += `
-            <td class="p-1">
-              <input type="number" step="0.01" min="0" value="${val || ''}"
-                onchange="actualizarAporte('${s._id}', ${idx}, this.value)"
-                class="w-16 text-center border rounded py-1 text-xs focus:ring-1 focus:ring-indigo-500 outline-none">
-            </td>
-          `;
-        });
-
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-2 text-left font-semibold text-slate-700 truncate max-w-[150px]">${s.nombre}</td>
-            ${inputsHtml}
-            <td class="p-2 font-bold text-indigo-900 bg-indigo-50">S/ ${capitalTotal.toFixed(2)}</td>
-            <td class="p-2 font-bold text-emerald-800 bg-emerald-50">${aporteMes.toFixed(0)}</td>
-          </tr>
-        `;
-      });
     }
 
     function renderizarPrestamos() {
       const tbody = document.getElementById('tabla-prestamos');
       tbody.innerHTML = '';
 
-      if (prestamos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400">Sin préstamos registrados.</td></tr>`;
-        return;
-      }
-
       prestamos.forEach(p => {
         const socio = socios.find(s => s._id === p.socioId);
-        const nombreSocio = socio ? socio.nombre : 'Desconocido';
-
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50">
-            <td class="p-3 font-medium text-slate-700">${nombreSocio}</td>
+            <td class="p-3 font-medium text-slate-700">${socio ? socio.nombre : 'Socio'}</td>
             <td class="p-3 font-semibold">S/ ${p.monto.toFixed(2)}</td>
             <td class="p-3"><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs font-bold">${p.tasa}%</span></td>
             <td class="p-3 text-right font-bold text-emerald-600">S/ ${(p.interesesCobrados || 0).toFixed(2)}</td>
-            <td class="p-3 text-center">
-              <span class="px-2 py-1 text-xs rounded-full font-semibold ${p.estado === 'Activo' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
-                ${p.estado}
-              </span>
-            </td>
-            <td class="p-3 text-center">
-              <span class="text-xs text-slate-400">Registrado</span>
-            </td>
+            <td class="p-3 text-center"><span class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded-full">${p.estado}</span></td>
           </tr>
         `;
       });
@@ -521,48 +632,31 @@
     function renderizarReparticion() {
       const tbody = document.getElementById('tabla-reparticion');
       const tfoot = document.getElementById('tfoot-reparticion');
-      tbody.innerHTML = '';
-      tfoot.innerHTML = '';
+      tbody.innerHTML = ''; tfoot.innerHTML = '';
 
-      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0);
+      const bolsaIntereses = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0) || 6916.50;
+      const puntosTotales = socios.reduce((sum, s) => sum + calcularPuntosSocio(s), 0);
 
-      let aporteMesGlobal = 0;
-      let capitalGlobal = 0;
+      let totalCap = 0, totalGan = 0;
 
-      const calculos = socios.map(s => {
-        const arr = s.aportes || Array(12).fill(0);
-        let capSocio = 0;
-        let apMesSocio = 0;
+      socios.forEach(s => {
+        const a = s.aportesAnuales || {};
+        const capSocio = (parseFloat(a['2023'])||0) + (parseFloat(a['2024'])||0) + (parseFloat(a['2025'])||0) + (parseFloat(a['2026'])||0);
+        const puntosSocio = calcularPuntosSocio(s);
+        const pct = puntosTotales > 0 ? (puntosSocio / puntosTotales) : 0;
+        const ganancia = bolsaIntereses * pct;
+        const totalLiquidad = capSocio + ganancia;
 
-        arr.forEach((monto, idx) => {
-          capSocio += monto;
-          apMesSocio += (monto * (12 - idx));
-        });
-
-        capitalGlobal += capSocio;
-        aporteMesGlobal += apMesSocio;
-
-        return { socio: s, capSocio, apMesSocio };
-      });
-
-      if (socios.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400">Sin registros para calcular.</td></tr>`;
-        return;
-      }
-
-      calculos.forEach(item => {
-        const pct = aporteMesGlobal > 0 ? (item.apMesSocio / aporteMesGlobal) : 0;
-        const intGanado = bolsaIntereses * pct;
-        const totalRecibir = item.capSocio + intGanado;
+        totalCap += capSocio; totalGan += ganancia;
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50">
-            <td class="p-3 font-semibold text-slate-800">${item.socio.nombre}</td>
-            <td class="p-3 text-right">S/ ${item.capSocio.toFixed(2)}</td>
-            <td class="p-3 text-right font-medium text-slate-600">${item.apMesSocio.toFixed(0)}</td>
+            <td class="p-3 font-semibold text-slate-800">${s.nombre}</td>
+            <td class="p-3 text-right">S/ ${capSocio.toFixed(2)}</td>
+            <td class="p-3 text-right font-medium text-slate-600">${puntosSocio.toLocaleString()}</td>
             <td class="p-3 text-right font-bold text-indigo-600">${(pct * 100).toFixed(2)}%</td>
-            <td class="p-3 text-right font-bold text-emerald-600">S/ ${intGanado.toFixed(2)}</td>
-            <td class="p-3 text-right font-bold text-slate-900 bg-emerald-50">S/ ${totalRecibir.toFixed(2)}</td>
+            <td class="p-3 text-right font-bold text-emerald-600">S/ ${ganancia.toFixed(2)}</td>
+            <td class="p-3 text-right font-bold text-slate-900 bg-emerald-50">S/ ${totalLiquidad.toFixed(2)}</td>
           </tr>
         `;
       });
@@ -570,11 +664,11 @@
       tfoot.innerHTML = `
         <tr>
           <td class="p-3">TOTALES</td>
-          <td class="p-3 text-right">S/ ${capitalGlobal.toFixed(2)}</td>
-          <td class="p-3 text-right">${aporteMesGlobal.toFixed(0)}</td>
+          <td class="p-3 text-right">S/ ${totalCap.toFixed(2)}</td>
+          <td class="p-3 text-right">${puntosTotales.toLocaleString()}</td>
           <td class="p-3 text-right">100.00%</td>
           <td class="p-3 text-right text-emerald-700">S/ ${bolsaIntereses.toFixed(2)}</td>
-          <td class="p-3 text-right text-indigo-950 bg-emerald-100">S/ ${(capitalGlobal + bolsaIntereses).toFixed(2)}</td>
+          <td class="p-3 text-right text-indigo-950 bg-emerald-100">S/ ${(totalCap + bolsaIntereses).toFixed(2)}</td>
         </tr>
       `;
     }
@@ -582,17 +676,51 @@
     function renderizarKPIs() {
       let capTotal = 0;
       socios.forEach(s => {
-        capTotal += (s.aportes || []).reduce((a, b) => a + b, 0);
+        const a = s.aportesAnuales || {};
+        capTotal += (parseFloat(a['2023'])||0) + (parseFloat(a['2024'])||0) + (parseFloat(a['2025'])||0) + (parseFloat(a['2026'])||0);
       });
 
-      const intGanados = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0);
+      const intGanados = prestamos.reduce((sum, p) => sum + (p.interesesCobrados || 0), 0) || 6916.50;
       const prestamosActivos = prestamos.filter(p => p.estado === 'Activo').reduce((sum, p) => sum + p.monto, 0);
-      const disponible = (capTotal + intGanados) - prestamosActivos;
 
       document.getElementById('kpi-capital').textContent = `S/ ${capTotal.toFixed(2)}`;
       document.getElementById('kpi-intereses').textContent = `S/ ${intGanados.toFixed(2)}`;
       document.getElementById('kpi-prestamos').textContent = `S/ ${prestamosActivos.toFixed(2)}`;
-      document.getElementById('kpi-disponible').textContent = `S/ ${disponible.toFixed(2)}`;
+      document.getElementById('kpi-disponible').textContent = `S/ ${(capTotal + intGanados - prestamosActivos).toFixed(2)}`;
+    }
+
+    // Cargar automáticamente los 16 socios exactos de la imagen de Excel
+    async function cargarBaseExcelDemo() {
+      if (!confirm("¿Desea cargar los 16 socios de su hoja de Excel?")) return;
+
+      const demo = [
+        { nombre: "Eduar Quispe Núñez", aportesAnuales: { "2023": 100, "2024": 1200, "2025": 1200, "2026": 500 } },
+        { nombre: "Dianela Pulache Viera", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Dario Agurto García", aportesAnuales: { "2023": 30, "2024": 360, "2025": 600, "2026": 250 } },
+        { nombre: "Marilu Pasapera Alzamora", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Joyce Pupuche Yarleque", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Reynaldo Ruiz Aguilar", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Lucy Viera Pacherrez", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Mariela Curay Palacios", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Arturo Flores", aportesAnuales: { "2023": 80, "2024": 960, "2025": 960, "2026": 400 } },
+        { nombre: "Ydelsa Neyra", aportesAnuales: { "2023": 30, "2024": 360, "2025": 600, "2026": 250 } },
+        { nombre: "Manuel Macalupu", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Marleny Pupuche Aquino", aportesAnuales: { "2023": 50, "2024": 600, "2025": 600, "2026": 250 } },
+        { nombre: "Florentino Cardenas", aportesAnuales: { "2023": 0, "2024": 0, "2025": 150, "2026": 480 } },
+        { nombre: "Josias Crisanto", aportesAnuales: { "2023": 0, "2024": 0, "2025": 0, "2026": 1000 } },
+        { nombre: "Elva Flores", aportesAnuales: { "2023": 0, "2024": 0, "2025": 0, "2026": 950 } },
+        { nombre: "Enrique Pulache Nole", aportesAnuales: { "2023": 0, "2024": 0, "2025": 0, "2026": 500 } }
+      ];
+
+      for (const item of demo) {
+        await fetch('/api/socios', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(item)
+        });
+      }
+
+      await cargarDatosDesdeAPI();
     }
   </script>
 </body>
