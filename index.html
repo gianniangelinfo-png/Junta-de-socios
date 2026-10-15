@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <!-- SECCIÓN: REGISTRAR NUEVO SOCIO CON APORTES POR AÑO -->
+    <!-- SECCIÓN: REGISTRAR NUEVO SOCIO -->
     <div id="sec-socios" class="tab-content hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm h-fit">
@@ -216,7 +216,7 @@
       </div>
     </div>
 
-    <!-- SECCIÓN: PRÉSTAMOS -->
+    <!-- SECCIÓN: PRÉSTAMOS CON BOTÓN DE ELIMINAR -->
     <div id="sec-prestamos" class="tab-content hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm h-fit">
@@ -276,6 +276,7 @@
                   <th class="p-3">Tasa</th>
                   <th class="p-3 text-right">Int. Registrado (S/)</th>
                   <th class="p-3 text-center">Estado</th>
+                  <th class="p-3 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody id="tabla-prestamos" class="divide-y">
@@ -373,7 +374,6 @@
       const a2025 = parseFloat(a['2025']) || 0;
       const a2026 = parseFloat(a['2026']) || 0;
 
-      // Puntos = (Aporte2023 * 1) + (Aporte2024 * 12) + (Aporte2025 * 12) + (Aporte2026 * 5)
       return (a2023 * 1) + (a2024 * 12) + (a2025 * 12) + (a2026 * 5);
     }
 
@@ -420,6 +420,14 @@
     async function eliminarSocio(id) {
       if (confirm("¿Está seguro de eliminar este socio y sus registros?")) {
         await fetch(`/api/socios/${id}`, { method: 'DELETE' });
+        await cargarDatosDesdeAPI();
+      }
+    }
+
+    // FUNCIÓN PARA ELIMINAR PRÉSTAMO
+    async function eliminarPrestamo(id) {
+      if (confirm("¿Está seguro de eliminar este préstamo?")) {
+        await fetch(`/api/prestamos/${id}`, { method: 'DELETE' });
         await cargarDatosDesdeAPI();
       }
     }
@@ -604,6 +612,11 @@
       const tbody = document.getElementById('tabla-prestamos');
       tbody.innerHTML = '';
 
+      if (prestamos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400">Sin préstamos registrados.</td></tr>`;
+        return;
+      }
+
       prestamos.forEach(p => {
         const socio = socios.find(s => s._id === p.socioId);
         tbody.innerHTML += `
@@ -613,6 +626,11 @@
             <td class="p-3"><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs font-bold">${p.tasa}%</span></td>
             <td class="p-3 text-right font-bold text-emerald-600">S/ ${(p.interesesCobrados || 0).toFixed(2)}</td>
             <td class="p-3 text-center"><span class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded-full">${p.estado}</span></td>
+            <td class="p-3 text-center">
+              <button onclick="eliminarPrestamo('${p._id}')" class="text-rose-600 hover:text-rose-800 p-1" title="Eliminar Préstamo">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
           </tr>
         `;
       });
