@@ -1,0 +1,29 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const path = require('path'); // <-- Agregar esta línea
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Servir archivos estáticos de la carpeta actual
+app.use(express.static(__dirname));
+
+// Conexión a MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB Conectado'))
+  .catch(err => console.error('Error MongoDB:', err));
+
+// Configuración de Esquemas y Rutas de la API (Tus rutas aquí)
+// ...
+
+// Ruta principal para servir la interfaz web
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
