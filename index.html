@@ -1,4 +1,540 @@
-const express = require('express');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestión - Junta de Socios</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 p-2.5 rounded-lg text-white">
+          <i class="fa-solid fa-users-rectangle text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-wide">Junta de Socios</h1>
+          <p class="text-xs text-slate-400">Sistema de Aportes, Préstamos y Repartición</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-sm bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+        <span class="inline-block w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+        <span id="db-status-text" class="text-slate-300 font-medium">Conectado al Backend</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full space-y-8">
+
+    <!-- KPI Summary Cards -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Socios</p>
+          <h3 id="kpi-total-socios" class="text-2xl font-bold text-slate-900">0</h3>
+        </div>
+        <div class="bg-blue-50 text-blue-600 p-3 rounded-lg">
+          <i class="fa-solid fa-user-group text-xl"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Aportado</p>
+          <h3 id="kpi-total-aportado" class="text-2xl font-bold text-emerald-600">S/ 0.00</h3>
+        </div>
+        <div class="bg-emerald-50 text-emerald-600 p-3 rounded-lg">
+          <i class="fa-solid fa-piggy-bank text-xl"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Préstamos Activos</p>
+          <h3 id="kpi-total-prestamos" class="text-2xl font-bold text-amber-600">S/ 0.00</h3>
+        </div>
+        <div class="bg-amber-50 text-amber-600 p-3 rounded-lg">
+          <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Intereses Generados</p>
+          <h3 id="kpi-total-intereses" class="text-2xl font-bold text-indigo-600">S/ 0.00</h3>
+        </div>
+        <div class="bg-indigo-50 text-indigo-600 p-3 rounded-lg">
+          <i class="fa-solid fa-chart-line text-xl"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Registrar Socio -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-1">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-indigo-600"></i> Registrar Nuevo Socio
+        </h2>
+        <form id="form-socio" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo</label>
+            <input type="text" id="socio-nombre" required placeholder="Ej. Juan Pérez"
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">DNI / Documento</label>
+            <input type="text" id="socio-dni" required placeholder="Ej. 12345678"
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Teléfono</label>
+            <input type="text" id="socio-telefono" placeholder="Ej. 987654321"
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Socio
+          </button>
+        </form>
+      </div>
+
+      <!-- Registrar Préstamo -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-file-invoice-dollar text-amber-600"></i> Registrar Nuevo Préstamo
+        </h2>
+        <form id="form-prestamo" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Socio Prestatario</label>
+            <select id="prestamo-socio" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+              <option value="">-- Seleccionar Socio --</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Monto del Préstamo (S/)</label>
+            <input type="number" id="prestamo-monto" min="1" step="0.01" required placeholder="0.00"
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tasa de Interés Mensual</label>
+            <select id="prestamo-tasa" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+              <option value="3">3% Mensual (Socio)</option>
+              <option value="5">5% Mensual (Externo / Especial)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mes de Otorgamiento</label>
+            <select id="prestamo-mes" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+              <option value="0">Enero</option>
+              <option value="1">Febrero</option>
+              <option value="2">Marzo</option>
+              <option value="3">Abril</option>
+              <option value="4">Mayo</option>
+              <option value="5">Junio</option>
+              <option value="6">Julio</option>
+              <option value="7">Agosto</option>
+              <option value="8">Setiembre</option>
+              <option value="9">Octubre</option>
+              <option value="10">Noviembre</option>
+              <option value="11">Diciembre</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Interés Generado Proyectado</label>
+            <input type="text" id="prestamo-interes-preview" disabled value="S/ 0.00"
+              class="w-full px-3 py-2 border border-slate-200 bg-slate-50 text-slate-500 font-semibold rounded-lg text-sm">
+          </div>
+          <div class="sm:col-span-2">
+            <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Registrar Préstamo
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Matriz de Aportes Mensuales -->
+    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-table-cells text-emerald-600"></i> Matriz de Aportes Mensuales (Ene - Dic)
+          </h2>
+          <p class="text-xs text-slate-500">Ingresa o actualiza los aportes directos de cada socio mes a mes.</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-900 text-slate-200 uppercase font-semibold">
+              <th class="p-3 rounded-tl-lg sticky left-0 bg-slate-900">Socio</th>
+              <th class="p-2 text-center">Ene</th>
+              <th class="p-2 text-center">Feb</th>
+              <th class="p-2 text-center">Mar</th>
+              <th class="p-2 text-center">Abr</th>
+              <th class="p-2 text-center">May</th>
+              <th class="p-2 text-center">Jun</th>
+              <th class="p-2 text-center">Jul</th>
+              <th class="p-2 text-center">Ago</th>
+              <th class="p-2 text-center">Set</th>
+              <th class="p-2 text-center">Oct</th>
+              <th class="p-2 text-center">Nov</th>
+              <th class="p-2 text-center">Dic</th>
+              <th class="p-3 text-right bg-slate-800">Total Aporte</th>
+              <th class="p-3 text-right bg-slate-800 rounded-tr-lg">Aporte-Tiempo</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-aportes-body" class="divide-y divide-slate-200">
+            <!-- Renderizado dinámico -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tablas de Préstamos y Repartición de Intereses -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Lista de Préstamos -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-indigo-600"></i> Registro de Préstamos
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 uppercase font-semibold">
+                <th class="p-2">Socio</th>
+                <th class="p-2 text-right">Monto</th>
+                <th class="p-2 text-center">Tasa</th>
+                <th class="p-2 text-center">Mes</th>
+                <th class="p-2 text-right">Interés</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-prestamos-body" class="divide-y divide-slate-100">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cuadro de Repartición de Utilidades / Intereses -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-sack-dollar text-emerald-600"></i> Distribution Ponderada de Intereses
+          </h2>
+          <p class="text-xs text-slate-500">Cálculo proporcional basado en la fórmula Aporte x Meses de permanencia.</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 uppercase font-semibold">
+                <th class="p-2">Socio</th>
+                <th class="p-2 text-right">Aporte Total</th>
+                <th class="p-2 text-right">Aporte-Tiempo</th>
+                <th class="p-2 text-center">% Participación</th>
+                <th class="p-2 text-right font-bold text-emerald-700">Ganancia Interés</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-reparticion-body" class="divide-y divide-slate-100">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+      &copy; 2026 Sistema de Gestión Junta de Socios. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <!-- Script Lógica Frontend -->
+  <script>
+    const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
+    const PONDERADORES = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
+    let socios = [];
+    let prestamos = [];
+
+    // Inicializar app
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarDatos();
+      configurarEventos();
+    });
+
+    function configurarEventos() {
+      document.getElementById('form-socio').addEventListener('submit', guardarSocio);
+      document.getElementById('form-prestamo').addEventListener('submit', guardarPrestamo);
+      
+      const montoInput = document.getElementById('prestamo-monto');
+      const tasaSelect = document.getElementById('prestamo-tasa');
+      const mesSelect = document.getElementById('prestamo-mes');
+
+      [montoInput, tasaSelect, mesSelect].forEach(el => {
+        el.addEventListener('input', calcularPreviewInteres);
+      });
+    }
+
+    // Peticiones API (Backend)
+    async function cargarDatos() {
+      try {
+        const [resSocios, resPrestamos] = await Promise.all([
+          fetch('/api/socios'),
+          fetch('/api/prestamos')
+        ]);
+
+        socios = await resSocios.json();
+        prestamos = await resPrestamos.json();
+
+        renderizarTodo();
+      } catch (err) {
+        console.error("Error al cargar datos desde el backend:", err);
+      }
+    }
+
+    async function guardarSocio(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('socio-nombre').value;
+      const dni = document.getElementById('socio-dni').value;
+      const telefono = document.getElementById('socio-telefono').value;
+
+      try {
+        const res = await fetch('/api/socios', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, dni, telefono, aportes: Array(12).fill(0) })
+        });
+
+        if (res.ok) {
+          document.getElementById('form-socio').reset();
+          cargarDatos();
+        }
+      } catch (err) {
+        console.error("Error al guardar socio:", err);
+      }
+    }
+
+    async function actualizarAporte(socioId, mesIndex, monto) {
+      const socio = socios.find(s => s._id === socioId);
+      if (!socio) return;
+
+      const nuevosAportes = [...socio.aportes];
+      nuevosAportes[mesIndex] = parseFloat(monto) || 0;
+
+      try {
+        await fetch(`/api/socios/${socioId}/aportes`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ aportes: nuevosAportes })
+        });
+        
+        cargarDatos();
+      } catch (err) {
+        console.error("Error al actualizar aporte:", err);
+      }
+    }
+
+    async function eliminarSocio(socioId) {
+      if (!confirm("¿Está seguro de eliminar este socio y sus registros?")) return;
+      try {
+        await fetch(`/api/socios/${socioId}`, { method: 'DELETE' });
+        cargarDatos();
+      } catch (err) {
+        console.error("Error al eliminar socio:", err);
+      }
+    }
+
+    async function guardarPrestamo(e) {
+      e.preventDefault();
+      const socioId = document.getElementById('prestamo-socio').value;
+      const monto = parseFloat(document.getElementById('prestamo-monto').value) || 0;
+      const tasa = parseFloat(document.getElementById('prestamo-tasa').value) || 3;
+      const mesInicio = parseInt(document.getElementById('prestamo-mes').value) || 0;
+
+      const mesesRestantes = 12 - mesInicio;
+      const interesesCobrados = (monto * (tasa / 100)) * mesesRestantes;
+
+      try {
+        const res = await fetch('/api/prestamos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ socioId, monto, tasa, mesInicio, interesesCobrados, estado: 'ACTIVO' })
+        });
+
+        if (res.ok) {
+          document.getElementById('form-prestamo').reset();
+          calcularPreviewInteres();
+          cargarDatos();
+        }
+      } catch (err) {
+        console.error("Error al guardar préstamo:", err);
+      }
+    }
+
+    function calcularPreviewInteres() {
+      const monto = parseFloat(document.getElementById('prestamo-monto').value) || 0;
+      const tasa = parseFloat(document.getElementById('prestamo-tasa').value) || 3;
+      const mesInicio = parseInt(document.getElementById('prestamo-mes').value) || 0;
+
+      const mesesRestantes = 12 - mesInicio;
+      const interesTotal = (monto * (tasa / 100)) * mesesRestantes;
+
+      document.getElementById('prestamo-interes-preview').value = `S/ ${interesTotal.toFixed(2)}`;
+    }
+
+    // Cálculos de Ponderación
+    function calcularAporteTiempoSocio(aportes) {
+      return aportes.reduce((sum, monto, idx) => sum + (monto * PONDERADORES[idx]), 0);
+    }
+
+    // Renderizado de la Interfaz
+    function renderizarTodo() {
+      renderizarKPIs();
+      renderizarSelectSocios();
+      renderizarTablaAportes();
+      renderizarTablaPrestamos();
+      renderizarTablaReparticion();
+    }
+
+    function renderizarKPIs() {
+      let totalAportado = 0;
+      socios.forEach(s => {
+        totalAportado += s.aportes.reduce((a, b) => a + b, 0);
+      });
+
+      let totalPrestamos = 0;
+      let totalIntereses = 0;
+      prestamos.forEach(p => {
+        totalPrestamos += p.monto;
+        totalIntereses += p.interesesCobrados;
+      });
+
+      document.getElementById('kpi-total-socios').innerText = socios.length;
+      document.getElementById('kpi-total-aportado').innerText = `S/ ${totalAportado.toFixed(2)}`;
+      document.getElementById('kpi-total-prestamos').innerText = `S/ ${totalPrestamos.toFixed(2)}`;
+      document.getElementById('kpi-total-intereses').innerText = `S/ ${totalIntereses.toFixed(2)}`;
+    }
+
+    function renderizarSelectSocios() {
+      const select = document.getElementById('prestamo-socio');
+      select.innerHTML = '<option value="">-- Seleccionar Socio --</option>';
+      socios.forEach(s => {
+        select.innerHTML += `<option value="${s._id}">${s.nombre} (DNI: ${s.dni})</option>`;
+      });
+    }
+
+    function renderizarTablaAportes() {
+      const tbody = document.getElementById('tabla-aportes-body');
+      tbody.innerHTML = '';
+
+      if (socios.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="15" class="text-center p-4 text-slate-400">No hay socios registrados.</td></tr>`;
+        return;
+      }
+
+      socios.forEach(s => {
+        const totalAporte = s.aportes.reduce((a, b) => a + b, 0);
+        const aporteTiempo = calcularAporteTiempoSocio(s.aportes);
+
+        let inputsMeses = '';
+        s.aportes.forEach((monto, idx) => {
+          inputsMeses += `
+            <td class="p-1">
+              <input type="number" min="0" value="${monto || 0}" 
+                onchange="actualizarAporte('${s._id}', ${idx}, this.value)"
+                class="w-14 text-center py-1 border border-slate-200 rounded text-xs focus:ring-1 focus:ring-indigo-500">
+            </td>
+          `;
+        });
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-semibold text-slate-800 sticky left-0 bg-white shadow-sm flex items-center justify-between gap-2">
+              <span>${s.nombre}</span>
+              <button onclick="eliminarSocio('${s._id}')" class="text-rose-500 hover:text-rose-700">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </td>
+            ${inputsMeses}
+            <td class="p-3 text-right font-bold text-slate-900 bg-slate-50">S/ ${totalAporte.toFixed(2)}</td>
+            <td class="p-3 text-right font-bold text-indigo-600 bg-indigo-50">S/ ${aporteTiempo.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderizarTablaPrestamos() {
+      const tbody = document.getElementById('tabla-prestamos-body');
+      tbody.innerHTML = '';
+
+      if (prestamos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-400">No hay préstamos registrados.</td></tr>`;
+        return;
+      }
+
+      prestamos.forEach(p => {
+        const socio = socios.find(s => s._id === p.socioId);
+        const nombreSocio = socio ? socio.nombre : 'Socio Desconocido';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 font-medium text-slate-800">${nombreSocio}</td>
+            <td class="p-2 text-right font-semibold">S/ ${p.monto.toFixed(2)}</td>
+            <td class="p-2 text-center"><span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-[10px] font-bold">${p.tasa}%</span></td>
+            <td class="p-2 text-center text-slate-500">${MESES[p.mesInicio]}</td>
+            <td class="p-2 text-right font-bold text-emerald-600">S/ ${p.interesesCobrados.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderizarTablaReparticion() {
+      const tbody = document.getElementById('tabla-reparticion-body');
+      tbody.innerHTML = '';
+
+      if (socios.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-400">Sin datos de distribución.</td></tr>`;
+        return;
+      }
+
+      const sumaTotalAporteTiempo = socios.reduce((sum, s) => sum + calcularAporteTiempoSocio(s.aportes), 0);
+      const totalInteresesPuntos = prestamos.reduce((sum, p) => sum + p.interesesCobrados, 0);
+
+      socios.forEach(s => {
+        const totalAporte = s.aportes.reduce((a, b) => a + b, 0);
+        const aporteTiempo = calcularAporteTiempoSocio(s.aportes);
+        
+        const porcentaje = sumaTotalAporteTiempo > 0 ? (aporteTiempo / sumaTotalAporteTiempo) : 0;
+        const gananciaInteres = totalInteresesPuntos * porcentaje;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 font-medium text-slate-800">${s.nombre}</td>
+            <td class="p-2 text-right text-slate-600">S/ ${totalAporte.toFixed(2)}</td>
+            <td class="p-2 text-right font-semibold text-indigo-600">S/ ${aporteTiempo.toFixed(2)}</td>
+            <td class="p-2 text-center font-bold text-slate-700">${(porcentaje * 100).toFixed(2)}%</td>
+            <td class="p-2 text-right font-bold text-emerald-600 bg-emerald-50">S/ ${gananciaInteres.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path'); // <-- Agregar esta línea
